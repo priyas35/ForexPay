@@ -23,7 +23,7 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transactionId")
 	private Long transactionId;
 	@ManyToOne
-	@JoinColumn(name = "source_account_number")
+	@JoinColumn(name = "source_account_number")	
 	private Account sourceAccountNumber;
 	@ManyToOne
 	@JoinColumn(name = "destination_account_number")
@@ -35,5 +35,6 @@ public class Transaction {
 	@ManyToOne
 	@JoinColumn(name = "currency_code")
 	private Currency currency;
+	private String status;
 
 }

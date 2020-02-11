@@ -1,5 +1,8 @@
 package com.squad.forexpay.service;
 
-public interface AccountService {
+import com.squad.forexpay.dto.ResponseDto;
+import com.squad.forexpay.dto.TransactionRequestDto;
 
+public interface AccountService {
+	public ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto);
 }

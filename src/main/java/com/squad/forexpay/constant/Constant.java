@@ -1,5 +1,7 @@
 package com.squad.forexpay.constant;
 
+import org.springframework.http.HttpStatus;
+
 public class Constant {
 	
 	private Constant() {
@@ -13,7 +15,8 @@ public class Constant {
 	public static final String USER_NOT_FOUND = "User not found";
 	public static final String AUTHENTICATION_SUCCESSFUL = "Authentication Successful";
 	public static final String AUTHENTICATION_FAILED = "Authentication Failed";
-	public static final Integer AUTHENTICATION_SUCCESSFUL_CODE = 200;
+	public static final Integer AUTHENTICATION_SUCCESSFUL_CODE = HttpStatus.OK.value();
+	public static final String CURRENCY_NOT_FOUND = "Currency not found";
 
 }
 

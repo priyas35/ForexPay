@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
 	
 	/**
 	 * @author PriyaDharshini S.
-	 * @since 2020-02-07. This method will authenticate the user.
+	 * @since 2020-02-11. This method will authenticate the user.
 	 * @param loginDto - details of the user login
 	 * @return LoginResponseDto which has status message,statusCode,role of the user
 	 *         and userDetails.
@@ -45,6 +45,8 @@ public class UserServiceImpl implements UserService{
 			return loginResponseDto;
 		}
 	}
+	
+	
 
 
 }

@@ -44,8 +44,19 @@ public class CurrencyServiceImpl implements CurrencyService {
 			return currencies;
 		}
 	}
+	
 
-
+	/**
+	 * 
+	 * @author Raghu.
+	 * @since 2020-02-05. This method will get the exchange value for a particular
+	 *        currency.
+	 * @param fromCurrency, toCurrency and amount
+	 * @return ExchangeResponseDto which contains exchange value, taxAmount and
+	 *         total amount
+	 * 
+	 */
+	
 	@Override
 	public ExchangeResponseDto exchangeCurrency(String from, String to, Double amount) {
 

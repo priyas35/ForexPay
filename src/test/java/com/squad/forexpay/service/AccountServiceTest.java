@@ -62,6 +62,7 @@ public class AccountServiceTest {
 		
 		
 		transactionRequestDto.setUserId(1);
+		transactionRequestDto.setTransactionAmount(100D);
 		transactionRequestDto.setDestinationAccountNumber(1L);
 		
 	}

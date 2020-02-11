@@ -79,5 +79,5 @@ public class AccountController {
 			return new ResponseEntity<>(accountService.getMyTransactions(accountNumber), HttpStatus.OK);
 		}
 	}
-
+	
 }

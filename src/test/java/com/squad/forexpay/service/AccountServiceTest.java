@@ -22,48 +22,48 @@ import com.squad.forexpay.repository.UserRepository;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class AccountServiceTest {
-	
+
 	@InjectMocks
 	AccountServiceImpl accountServiceImpl;
-	
+
 	@Mock
 	UserRepository userRepository;
-	
+
 	@Mock
 	UserAccountRepository userAccountRepository;
-	
+
 	UserAccount userAccount = new UserAccount();
-	
+
 	@org.junit.Before
 	public void setup() {
-		
+
 		Currency currency = new Currency();
 		currency.setCurrencyName("test");
-		
+
 		Account account = new Account();
 		account.setAccountNumber(1L);
 		account.setBalance(1.0);
 		account.setBankName("test");
 		account.setBranchName("test");
 		account.setCurrency(currency);
-		
+
 		userAccount.setAccount(account);
-		
+
 	}
-	
+
 	@Test(expected = UserNotFoundException.class)
 	public void testGetAccountSummaryUserNotFoundException() throws UserNotFoundException, AccountnotFoundException {
 		Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(null));
 		accountServiceImpl.getAccountSummary(1);
 	}
-	
+
 	@Test(expected = AccountnotFoundException.class)
 	public void testGetAccountSummaryAccountnotFoundException() throws UserNotFoundException, AccountnotFoundException {
 		Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(new User()));
 		Mockito.when(userAccountRepository.findByUser(Mockito.any())).thenReturn(Optional.ofNullable(null));
 		accountServiceImpl.getAccountSummary(1);
 	}
-	
+
 	@Test
 	public void testGetAccountSummarySuccess() throws UserNotFoundException, AccountnotFoundException {
 		Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(new User()));

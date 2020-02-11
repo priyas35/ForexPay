@@ -71,8 +71,10 @@ public class AccountController {
 	@GetMapping("/{accountNumber}/transactions")
 	public ResponseEntity<List<TransactionDetailsDto>> getMyTransaction(@PathVariable Long accountNumber) throws AccountnotFoundException{
 		if(accountNumber == null) {
+			log.debug("Exception occurred in AccountController getMyTransaction method:"+Constant.ACCOUNT_NOT_FOUND);
 			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
 		}else {
+			log.info("Entering into AccountController getMyTransaction method: calling accountService");
 			return new ResponseEntity<>(accountService.getMyTransactions(accountNumber),HttpStatus.OK);
 		}
 	}

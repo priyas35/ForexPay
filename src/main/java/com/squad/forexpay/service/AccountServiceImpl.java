@@ -180,14 +180,16 @@ public class AccountServiceImpl implements AccountService{
 	public List<TransactionDetailsDto> getMyTransactions(Long accountNumber) throws AccountnotFoundException{
 		Optional<Account> account = accountRepository.findById(accountNumber);
 		if(!account.isPresent()) {
+			log.debug("Exception occurred in AccountServiceImpl getMyTransactions method:"+Constant.ACCOUNT_NOT_FOUND);
 			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
 		}
 		List<Transaction> transactions = transactionRepository.findBySourceAccountNumber(account.get());
 		if(transactions.isEmpty()) {
+			log.debug("Exception occurred in AccountServiceImpl getMyTransactions method:"+Constant.TRANSACTION_NOT_FOUND);
 			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
 		}
 		List<TransactionDetailsDto> detailsDtos = new ArrayList<>();
-		
+		log.info("Entering into AccountServiceImpl getMyTransactions method:getting transaction details");
 		transactions.forEach(mytransaction -> {
 			TransactionDetailsDto transactionDetailsDto = new TransactionDetailsDto();
 			transactionDetailsDto.setAvailableBalance(mytransaction.getAvailableBalance());

@@ -8,4 +8,5 @@ import com.squad.forexpay.entity.Account;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long>{
 
+	
 }

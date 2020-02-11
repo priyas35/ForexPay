@@ -14,6 +14,8 @@ public class Constant {
 	public static final String AUTHENTICATION_SUCCESSFUL = "Authentication Successful";
 	public static final String AUTHENTICATION_FAILED = "Authentication Failed";
 	public static final Integer AUTHENTICATION_SUCCESSFUL_CODE = 200;
+	public static final String EXCHANGE_API = "https://api.exchangeratesapi.io/latest?base=";
+	public static final String CURRENCY_CODE_USD = "USD";
 
 }
 

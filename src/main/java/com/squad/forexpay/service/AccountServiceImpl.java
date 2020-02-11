@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.squad.forexpay.constant.Constant;
 import com.squad.forexpay.dto.AccountSummaryResponseDto;
+import com.squad.forexpay.dto.ExchangeResponseDto;
 import com.squad.forexpay.dto.ResponseDto;
 import com.squad.forexpay.dto.TransactionDetailsDto;
 import com.squad.forexpay.dto.TransactionRequestDto;
@@ -64,25 +65,32 @@ public class AccountServiceImpl implements AccountService{
 	}
 	
 	/**
+	 * This method is used to do fund transfer from one account to another account
 	 * 
-	 * @param transactionRequestDto
-	 * @return
+	 * @author chethana
+	 * @param transactionRequestDto- Intakes transaction details
+	 * @return ResponseDto
+	 * @throws UserNotFoundException- thrown when the userId is invalid
+	 * @throws AccountnotFoundException - thrown when the source/destination account is invalid
 	 */
-	public ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto) {
+	public ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto) throws UserNotFoundException, AccountnotFoundException {
 		log.info("Entering into transferCurrency() of AccountServiceImpl");
 		Optional<User> userRespnse=userRepository.findById(transactionRequestDto.getUserId());
 		if(!userRespnse.isPresent()) {
-			log.error("Exception occured in transferCurrency() of AccountServiceImpl:");
+			log.error("Exception occured in transferCurrency of AccountServiceImpl:");
+			throw new UserNotFoundException("User Not found");
 		}
 		Optional<UserAccount> sourceAccountResponse=userAccountRepository.findByUser(userRespnse.get());
 		if(!sourceAccountResponse.isPresent()) {
 			log.error("Exception occured in transferCurrency() of AccountServiceImpl:");
+			throw new AccountnotFoundException("Source Account Not found");
 		}
 		Optional<Account> destinationAccountResponse=accountRepository.findById(transactionRequestDto.getDestinationAccountNumber());
 		if(!destinationAccountResponse.isPresent()) {
 			log.error("Exception occured in transferCurrency() of AccountServiceImpl:");
+			throw new AccountnotFoundException("Destination Account Not found");
 		}
-		//update the debit account details
+				//update the debit account details
 				Transaction debitTransaction= new Transaction();
 				debitTransaction.setCurrency(sourceAccountResponse.get().getAccount().getCurrency());
 				debitTransaction.setDestinationAccountNumber(destinationAccountResponse.get());
@@ -90,13 +98,20 @@ public class AccountServiceImpl implements AccountService{
 				debitTransaction.setTransactionAmount(transactionRequestDto.getTransactionAmount());
 				debitTransaction.setTransactionDate(LocalDateTime.now());
 				debitTransaction.setTransactionType(Constant.DEBIT);
-				debitTransaction.setAvailableBalance(sourceAccountResponse.get().getAccount().getBalance());
+				debitTransaction.setAvailableBalance(sourceAccountResponse.get().getAccount().getBalance()-transactionRequestDto.getTransactionAmount());
 				debitTransaction.setStatus(Constant.TRANSACTION_STATUS_PENDING);
 				transactionRepository.save(debitTransaction);
 				log.debug("Successfully updated the debit account details");
 		return new ResponseDto();
 	}
 	
+
+	/**
+	 * This method is used to update the status of the pending records and completes transaction
+	 * 
+	 * @author Chethana
+	 * @throws MinimumBalanceException- when the minimum balance is not maintained for fund transfer
+	 */
 	@Scheduled(cron="0 */2 * ? * *")//For every 2 minutes
 	public void updateTransferCurrency() throws MinimumBalanceException {
 		log.info("Entering into updateTransferCurrency() of AccountServiceImpl");
@@ -118,10 +133,13 @@ public class AccountServiceImpl implements AccountService{
 				transactionIndex.setStatus(Constant.TRANSACTION_STATUS_CANCELLED);
 				throw new MinimumBalanceException("Minimum Balance Should be maintained");
 			}
+			CurrencyServiceImpl currencyServiceImpl=new CurrencyServiceImpl();
+			ExchangeResponseDto exchangeResponseDto= currencyServiceImpl.exchangeCurrency(sourceAccount.getCurrency().getCode(), destinationAccount.getCurrency().getCode(), transactionIndex.getTransactionAmount());
+
 			//debit account
-			destinationAccount.setBalance(destinationAccount.getBalance()-transactionIndex.getTransactionAmount());
+			destinationAccount.setBalance(destinationAccount.getBalance()-exchangeResponseDto.getTotalAmount());
 			//credit account
-			sourceAccount.setBalance(sourceAccount.getBalance()+transactionIndex.getTransactionAmount());
+			sourceAccount.setBalance(sourceAccount.getBalance()+exchangeResponseDto.getConvertedAmount());
 			accountResponseList.add(destinationAccount);
 			accountResponseList.add(sourceAccount);
 			accountRepository.saveAll(accountResponseList);
@@ -134,7 +152,7 @@ public class AccountServiceImpl implements AccountService{
 			creditTransaction.setCurrency(destinationAccount.getCurrency());
 			creditTransaction.setDestinationAccountNumber(sourceAccount);
 			creditTransaction.setSourceAccountNumber(destinationAccount);
-			creditTransaction.setTransactionAmount(transactionIndex.getTransactionAmount());
+			creditTransaction.setTransactionAmount(exchangeResponseDto.getConvertedAmount());
 			creditTransaction.setTransactionDate(LocalDateTime.now());
 			creditTransaction.setTransactionType(Constant.CREDIT);
 			creditTransaction.setAvailableBalance(destinationAccount.getBalance());

@@ -12,9 +12,8 @@ import com.squad.forexpay.exception.UserNotFoundException;
 public interface AccountService {
 	
 	AccountSummaryResponseDto getAccountSummary(Integer userId) throws UserNotFoundException, AccountnotFoundException;
-
-	ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto);
-
 	
 	List<TransactionDetailsDto> getMyTransactions(Long accountNumber) throws AccountnotFoundException;
+	
+	ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto) throws UserNotFoundException, AccountnotFoundException;
 }

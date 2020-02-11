@@ -33,9 +33,11 @@ public class AccountController {
 	 * 
 	 * @param transactionRequestDto
 	 * @return
+	 * @throws AccountnotFoundException 
+	 * @throws UserNotFoundException 
 	 */
 	@PostMapping("/transactions")
-	public ResponseEntity<ResponseDto> transferCurrency(@RequestBody TransactionRequestDto transactionRequestDto){
+	public ResponseEntity<ResponseDto> transferCurrency(@RequestBody TransactionRequestDto transactionRequestDto) throws UserNotFoundException, AccountnotFoundException{
 	log.info("Entering into transferCurrency of AccountController");
 	ResponseDto responseDto=accountService.transferCurrency(transactionRequestDto);
 	responseDto.setStatusCode(HttpStatus.OK.value());

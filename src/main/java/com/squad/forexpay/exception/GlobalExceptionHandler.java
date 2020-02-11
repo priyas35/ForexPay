@@ -53,4 +53,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		errorDto.setStatusCode(HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
 	}
+	
+	@ExceptionHandler(MinimumBalanceException.class)
+	public ResponseEntity<ErrorDto> minimumBalanceException(MinimumBalanceException ex) {
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setMessage(Constant.CURRENCY_NOT_FOUND);
+		errorDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
+	}
+	
+	@ExceptionHandler(AccountnotFoundException.class)
+	public ResponseEntity<ErrorDto> accountnotFoundException(AccountnotFoundException ex) {
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setMessage(Constant.CURRENCY_NOT_FOUND);
+		errorDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
+	}
 }

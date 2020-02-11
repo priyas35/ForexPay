@@ -71,20 +71,25 @@ public class AccountServiceImpl implements AccountService{
 	 * 
 	 * @param transactionRequestDto
 	 * @return
+	 * @throws UserNotFoundException 
+	 * @throws AccountnotFoundException 
 	 */
-	public ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto) {
+	public ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto) throws UserNotFoundException, AccountnotFoundException {
 		log.info("Entering into transferCurrency() of AccountServiceImpl");
 		Optional<User> userRespnse=userRepository.findById(transactionRequestDto.getUserId());
 		if(!userRespnse.isPresent()) {
 			log.error("Exception occured in transferCurrency() of AccountServiceImpl:");
+			throw new UserNotFoundException("User Not found");
 		}
 		Optional<UserAccount> sourceAccountResponse=userAccountRepository.findByUser(userRespnse.get());
 		if(!sourceAccountResponse.isPresent()) {
 			log.error("Exception occured in transferCurrency() of AccountServiceImpl:");
+			throw new AccountnotFoundException("Source Account Not found");
 		}
 		Optional<Account> destinationAccountResponse=accountRepository.findById(transactionRequestDto.getDestinationAccountNumber());
 		if(!destinationAccountResponse.isPresent()) {
 			log.error("Exception occured in transferCurrency() of AccountServiceImpl:");
+			throw new AccountnotFoundException("Destination Account Not found");
 		}
 				//update the debit account details
 				Transaction debitTransaction= new Transaction();

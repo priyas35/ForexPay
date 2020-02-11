@@ -10,5 +10,5 @@ public interface AccountService {
 	
 	AccountSummaryResponseDto getAccountSummary(Integer userId) throws UserNotFoundException, AccountnotFoundException;
 
-	ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto);
+	ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto) throws UserNotFoundException, AccountnotFoundException;
 }

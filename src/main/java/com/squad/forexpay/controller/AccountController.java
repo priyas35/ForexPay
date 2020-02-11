@@ -30,11 +30,13 @@ public class AccountController {
 	AccountService accountService;
 	
 	/**
+	 * This method is used to do fund transfer from one account to another account
 	 * 
-	 * @param transactionRequestDto
-	 * @return
-	 * @throws AccountnotFoundException 
-	 * @throws UserNotFoundException 
+	 * @author chethana
+	 * @param transactionRequestDto- Intakes transaction details
+	 * @return ResponseDto
+	 * @throws UserNotFoundException- thrown when the userId is invalid
+	 * @throws AccountnotFoundException - thrown when the source/destination account is invalid
 	 */
 	@PostMapping("/transactions")
 	public ResponseEntity<ResponseDto> transferCurrency(@RequestBody TransactionRequestDto transactionRequestDto) throws UserNotFoundException, AccountnotFoundException{

@@ -35,5 +35,6 @@ public class Transaction {
 	@ManyToOne
 	@JoinColumn(name = "currency_code")
 	private Currency currency;
+	private String status;
 
 }

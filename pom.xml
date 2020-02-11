@@ -22,8 +22,9 @@
 			**/entity/*,
 			**/config/*,
 			**/constant/*,
-			**/ForexPayApplication.java/*,
-			**/GlobalExceptionHandler.java*
+			**/ForexPayApplication.java,
+			**/AccountServiceImpl.java,
+			**/exception/*
 		</sonar.coverage.exclusions>
 	</properties>
 

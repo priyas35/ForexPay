@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.squad.forexpay.dto.AccountSummaryResponseDto;
 import com.squad.forexpay.dto.ExchangeResponseDto;
 import com.squad.forexpay.service.CurrencyService;
 

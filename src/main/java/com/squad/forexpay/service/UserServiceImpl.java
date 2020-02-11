@@ -1,6 +1,5 @@
 package com.squad.forexpay.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,7 @@ import org.springframework.stereotype.Service;
 import com.squad.forexpay.constant.Constant;
 import com.squad.forexpay.dto.LoginRequestDto;
 import com.squad.forexpay.dto.LoginResponseDto;
-import com.squad.forexpay.dto.TransactionDetailsDto;
 import com.squad.forexpay.entity.User;
-import com.squad.forexpay.entity.UserAccount;
 import com.squad.forexpay.exception.UserNotFoundException;
 import com.squad.forexpay.repository.TransactionRepository;
 import com.squad.forexpay.repository.UserAccountRepository;

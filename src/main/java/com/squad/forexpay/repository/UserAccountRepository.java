@@ -13,4 +13,5 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Intege
 	
 	Optional<UserAccount> findByUser(User user);
 
+
 }

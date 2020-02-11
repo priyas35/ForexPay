@@ -53,6 +53,16 @@ public class AccountController {
 		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
+	/**
+	 * This method is used to do fund transfer from one account to another account
+	 * 
+	 * @author Raghu M
+	 * @param userId- id of the current user
+	 * @return AccountSummaryResponseDto - it will give the current account summary details
+	 * @throws UserNotFoundException-   thrown when the userId is invalid
+	 * @throws AccountnotFoundException - thrown when the source/destination account
+	 *                                  is invalid
+	 */
 	@GetMapping("/{userId}")
 	public ResponseEntity<AccountSummaryResponseDto> getAccountSummary(@PathVariable("userId") Integer userId)
 			throws UserNotFoundException, AccountnotFoundException {

@@ -46,6 +46,16 @@ public class AccountServiceImpl implements AccountService{
 	@Autowired
 	TransactionRepository transactionRepository;
 
+	/**
+	 * This method is used to do fund transfer from one account to another account
+	 * 
+	 * @author Raghu M
+	 * @param userId- id of the current user
+	 * @return AccountSummaryResponseDto - it will give the current account summary details
+	 * @throws UserNotFoundException-   thrown when the userId is invalid
+	 * @throws AccountnotFoundException - thrown when the source/destination account
+	 *                                  is invalid
+	 */
 	@Override
 	public AccountSummaryResponseDto getAccountSummary(Integer userId) throws UserNotFoundException, AccountnotFoundException {
 		User user = new User();

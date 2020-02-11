@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -11,12 +12,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.squad.forexpay.dto.TransactionRequestDto;
 import com.squad.forexpay.entity.Account;
 import com.squad.forexpay.entity.Currency;
 import com.squad.forexpay.entity.User;
 import com.squad.forexpay.entity.UserAccount;
 import com.squad.forexpay.exception.AccountnotFoundException;
 import com.squad.forexpay.exception.UserNotFoundException;
+import com.squad.forexpay.repository.AccountRepository;
 import com.squad.forexpay.repository.UserAccountRepository;
 import com.squad.forexpay.repository.UserRepository;
 
@@ -32,9 +35,17 @@ public class AccountServiceTest {
 	@Mock
 	UserAccountRepository userAccountRepository;
 
+	@Mock
+	AccountRepository accountRepository;
+
+	User user = new User();
+	User user1 = new User();
+	TransactionRequestDto transactionRequestDto = new TransactionRequestDto();
+	Account account = new Account();
+
 	UserAccount userAccount = new UserAccount();
 
-	@org.junit.Before
+	@Before
 	public void setup() {
 
 		Currency currency = new Currency();
@@ -46,6 +57,14 @@ public class AccountServiceTest {
 		account.setBankName("test");
 		account.setBranchName("test");
 		account.setCurrency(currency);
+		user.setUserId(1);
+
+		userAccount.setAccount(account);
+		userAccount.setUser(user);
+
+		transactionRequestDto.setUserId(1);
+		transactionRequestDto.setTransactionAmount(100D);
+		transactionRequestDto.setDestinationAccountNumber(1L);
 
 		userAccount.setAccount(account);
 
@@ -71,6 +90,27 @@ public class AccountServiceTest {
 		Long actual = accountServiceImpl.getAccountSummary(1).getAccountNumber();
 		Long expected = 1L;
 		assertEquals(expected, actual);
+	}
+
+	@Test(expected = UserNotFoundException.class)
+	public void transferCurrencyUserNotFoundException() throws UserNotFoundException, AccountnotFoundException {
+		Mockito.when(userRepository.findById(11)).thenReturn(Optional.of(user));
+		accountServiceImpl.transferCurrency(transactionRequestDto);
+	}
+
+	@Test(expected = AccountnotFoundException.class)
+	public void transferCurrencyAccountNotFoundException() throws UserNotFoundException, AccountnotFoundException {
+		Mockito.when(userRepository.findById(1)).thenReturn(Optional.of(user));
+		Mockito.when(userAccountRepository.findByUser(user1)).thenReturn(Optional.of(userAccount));
+		accountServiceImpl.transferCurrency(transactionRequestDto);
+	}
+
+	@Test(expected = AccountnotFoundException.class)
+	public void transferCurrencyDestinationAccountNotFound() throws UserNotFoundException, AccountnotFoundException {
+		Mockito.when(userRepository.findById(1)).thenReturn(Optional.of(user));
+		Mockito.when(userAccountRepository.findByUser(user)).thenReturn(Optional.of(userAccount));
+		Mockito.when(accountRepository.findById(6L)).thenReturn(Optional.of(account));
+		accountServiceImpl.transferCurrency(transactionRequestDto);
 	}
 
 }

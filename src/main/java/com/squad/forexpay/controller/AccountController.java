@@ -32,23 +32,25 @@ public class AccountController {
 
 	@Autowired
 	AccountService accountService;
-	
+
 	/**
 	 * This method is used to do fund transfer from one account to another account
 	 * 
 	 * @author chethana
 	 * @param transactionRequestDto- Intakes transaction details
 	 * @return ResponseDto
-	 * @throws UserNotFoundException- thrown when the userId is invalid
-	 * @throws AccountnotFoundException - thrown when the source/destination account is invalid
+	 * @throws UserNotFoundException-   thrown when the userId is invalid
+	 * @throws AccountnotFoundException - thrown when the source/destination account
+	 *                                  is invalid
 	 */
 	@PostMapping("/transactions")
-	public ResponseEntity<ResponseDto> transferCurrency(@RequestBody TransactionRequestDto transactionRequestDto) throws UserNotFoundException, AccountnotFoundException{
-	log.info("Entering into transferCurrency of AccountController");
-	ResponseDto responseDto=accountService.transferCurrency(transactionRequestDto);
-	responseDto.setStatusCode(HttpStatus.OK.value());
-	responseDto.setStatusMessage("success");
-	return new ResponseEntity<>(responseDto,HttpStatus.OK);	
+	public ResponseEntity<ResponseDto> transferCurrency(@RequestBody TransactionRequestDto transactionRequestDto)
+			throws UserNotFoundException, AccountnotFoundException {
+		log.info("Entering into transferCurrency of AccountController");
+		ResponseDto responseDto = accountService.transferCurrency(transactionRequestDto);
+		responseDto.setStatusCode(HttpStatus.OK.value());
+		responseDto.setStatusMessage("success");
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	@GetMapping("/{userId}")
@@ -56,27 +58,26 @@ public class AccountController {
 			throws UserNotFoundException, AccountnotFoundException {
 		return ResponseEntity.ok().body(accountService.getAccountSummary(userId));
 	}
-	
-	
+
 	/**
 	 * 
 	 * @author PriyaDharshini S.
 	 * @since 2020-02-11. This method will get the transactions of the current user.
 	 * @param accountNumber - accountNumber of the current logged in user.
-	 * @return list of TransactionDetailsDto - it is having all the transaction details.
-	 * @throws AccountnotFoundException it will throw the exception if the account is not
-	 *                               registered.
+	 * @return list of TransactionDetailsDto - it is having all the transaction
+	 *         details.
+	 * @throws AccountnotFoundException it will throw the exception if the account
+	 *                                  is not registered.
 	 * 
 	 */
 	@GetMapping("/{accountNumber}/transactions")
-	public ResponseEntity<List<TransactionDetailsDto>> getMyTransaction(@PathVariable Long accountNumber) throws AccountnotFoundException{
-		if(accountNumber == null) {
-			log.debug("Exception occurred in AccountController getMyTransaction method:"+Constant.ACCOUNT_NOT_FOUND);
+	public ResponseEntity<List<TransactionDetailsDto>> getMyTransaction(@PathVariable Long accountNumber)
+			throws AccountnotFoundException {
+		if (accountNumber == null) {
 			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
-		}else {
-			log.info("Entering into AccountController getMyTransaction method: calling accountService");
-			return new ResponseEntity<>(accountService.getMyTransactions(accountNumber),HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(accountService.getMyTransactions(accountNumber), HttpStatus.OK);
 		}
 	}
-
+	
 }

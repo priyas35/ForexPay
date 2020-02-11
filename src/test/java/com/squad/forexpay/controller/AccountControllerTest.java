@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.squad.forexpay.dto.AccountSummaryResponseDto;
+import com.squad.forexpay.dto.ResponseDto;
 import com.squad.forexpay.dto.TransactionDetailsDto;
+import com.squad.forexpay.dto.TransactionRequestDto;
 import com.squad.forexpay.entity.Account;
 import com.squad.forexpay.exception.AccountnotFoundException;
 import com.squad.forexpay.exception.UserNotFoundException;
@@ -29,6 +32,15 @@ public class AccountControllerTest {
 
 	@Mock
 	AccountService accountService;
+	
+	TransactionRequestDto transactionRequestDto= new TransactionRequestDto();
+	ResponseDto responseDto= new ResponseDto();
+	
+	@Before
+	public void init() {
+
+	}
+	
 
 	Account account = new Account();
 
@@ -38,6 +50,13 @@ public class AccountControllerTest {
 		Integer actual = accountController.getAccountSummary(1).getStatusCodeValue();
 		Integer expected = 200;
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testTransferCurrency() throws UserNotFoundException, AccountnotFoundException {
+		Mockito.when(accountService.transferCurrency(transactionRequestDto)).thenReturn(responseDto);
+		ResponseEntity<ResponseDto> responseDto=accountController.transferCurrency(transactionRequestDto);
+		assertEquals(HttpStatus.OK.value(), responseDto.getStatusCode().value());
 	}
 
 	@Test

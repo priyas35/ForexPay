@@ -75,6 +75,7 @@
 			<url>http://52.172.39.32:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+
 	<build>
 		<plugins>
 			<plugin>

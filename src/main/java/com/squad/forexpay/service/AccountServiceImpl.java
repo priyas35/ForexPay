@@ -7,18 +7,22 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.squad.forexpay.constant.Constant;
+import com.squad.forexpay.dto.AccountSummaryResponseDto;
 import com.squad.forexpay.dto.ResponseDto;
 import com.squad.forexpay.dto.TransactionRequestDto;
 import com.squad.forexpay.entity.Account;
 import com.squad.forexpay.entity.Transaction;
 import com.squad.forexpay.entity.User;
 import com.squad.forexpay.entity.UserAccount;
+import com.squad.forexpay.exception.AccountnotFoundException;
 import com.squad.forexpay.exception.MinimumBalanceException;
+import com.squad.forexpay.exception.UserNotFoundException;
 import com.squad.forexpay.repository.AccountRepository;
 import com.squad.forexpay.repository.TransactionRepository;
 import com.squad.forexpay.repository.UserAccountRepository;
@@ -30,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Transactional
 public class AccountServiceImpl implements AccountService{
-
+	
 	@Autowired
 	UserAccountRepository userAccountRepository;
 	
@@ -42,6 +46,25 @@ public class AccountServiceImpl implements AccountService{
 	
 	@Autowired
 	TransactionRepository transactionRepository;
+
+	@Override
+	public AccountSummaryResponseDto getAccountSummary(Integer userId) throws UserNotFoundException, AccountnotFoundException {
+		User user = new User();
+		user.setUserId(userId);
+		if(!userRepository.findById(userId).isPresent()) {
+			throw new UserNotFoundException(Constant.USER_NOT_FOUND);
+		}
+		Optional<UserAccount> userAccount = userAccountRepository.findByUser(user);
+		if(!userAccount.isPresent()) {
+			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
+		}
+		AccountSummaryResponseDto accountSummaryResponseDto = new AccountSummaryResponseDto();
+		BeanUtils.copyProperties(userAccount.get().getAccount(), accountSummaryResponseDto);
+		accountSummaryResponseDto.setCurrencyType(userAccount.get().getAccount().getCurrency().getCurrencyName());
+		accountSummaryResponseDto.setMinimumBalance(1000.0);
+		return accountSummaryResponseDto;
+	}
+
 	
 	/**
 	 * 

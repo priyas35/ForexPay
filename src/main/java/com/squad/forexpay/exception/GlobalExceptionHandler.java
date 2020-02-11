@@ -46,4 +46,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
 	}
 
+	@ExceptionHandler(CurrencyNotFoundException.class)
+	public ResponseEntity<ErrorDto> currencyNotFoundException(CurrencyNotFoundException ex) {
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setMessage(Constant.CURRENCY_NOT_FOUND);
+		errorDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
+	}
 }

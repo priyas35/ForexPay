@@ -3,10 +3,9 @@ package com.squad.forexpay.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.squad.forexpay.entity.Account;
+import com.squad.forexpay.entity.Currency;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long>{
+public interface CurrencyRepository extends JpaRepository<Currency, String>{
 
-	
 }

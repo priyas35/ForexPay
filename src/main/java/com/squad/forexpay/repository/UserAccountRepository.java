@@ -10,7 +10,8 @@ import com.squad.forexpay.entity.UserAccount;
 
 @Repository
 public interface UserAccountRepository extends JpaRepository<UserAccount, Integer>{
-
+	
 	Optional<UserAccount> findByUser(User user);
+
 
 }

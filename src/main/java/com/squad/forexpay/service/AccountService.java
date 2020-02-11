@@ -1,8 +1,14 @@
 package com.squad.forexpay.service;
 
+import com.squad.forexpay.dto.AccountSummaryResponseDto;
 import com.squad.forexpay.dto.ResponseDto;
 import com.squad.forexpay.dto.TransactionRequestDto;
+import com.squad.forexpay.exception.AccountnotFoundException;
+import com.squad.forexpay.exception.UserNotFoundException;
 
 public interface AccountService {
-	public ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto);
+	
+	AccountSummaryResponseDto getAccountSummary(Integer userId) throws UserNotFoundException, AccountnotFoundException;
+
+	ResponseDto transferCurrency(TransactionRequestDto transactionRequestDto);
 }

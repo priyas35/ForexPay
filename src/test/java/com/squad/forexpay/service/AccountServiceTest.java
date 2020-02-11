@@ -2,6 +2,9 @@ package com.squad.forexpay.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -15,13 +18,16 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.squad.forexpay.dto.TransactionRequestDto;
 import com.squad.forexpay.entity.Account;
 import com.squad.forexpay.entity.Currency;
+import com.squad.forexpay.entity.Transaction;
 import com.squad.forexpay.entity.User;
 import com.squad.forexpay.entity.UserAccount;
 import com.squad.forexpay.exception.AccountnotFoundException;
 import com.squad.forexpay.exception.UserNotFoundException;
 import com.squad.forexpay.repository.AccountRepository;
+import com.squad.forexpay.repository.TransactionRepository;
 import com.squad.forexpay.repository.UserAccountRepository;
 import com.squad.forexpay.repository.UserRepository;
+
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class AccountServiceTest {
@@ -38,12 +44,20 @@ public class AccountServiceTest {
 	@Mock
 	AccountRepository accountRepository;
 
+	@Mock
+	TransactionRepository transactionRepository;
+	
+
+	UserAccount userAccount = new UserAccount();
+
+	Account account = new Account();
+
+	List<Transaction> transactions = new ArrayList<Transaction>();
+
 	User user = new User();
 	User user1 = new User();
 	TransactionRequestDto transactionRequestDto = new TransactionRequestDto();
-	Account account = new Account();
 
-	UserAccount userAccount = new UserAccount();
 
 	@Before
 	public void setup() {
@@ -57,6 +71,19 @@ public class AccountServiceTest {
 		account.setBankName("test");
 		account.setBranchName("test");
 		account.setCurrency(currency);
+
+		Transaction transaction = new Transaction();
+		transaction.setAvailableBalance(1.0);
+		transaction.setCurrency(currency);
+		transaction.setDestinationAccountNumber(account);
+		transaction.setSourceAccountNumber(account);
+		transaction.setStatus("test");
+		transaction.setTransactionAmount(1.0);
+		transaction.setTransactionDate(LocalDateTime.now());
+		transaction.setTransactionId(1L);
+		transaction.setTransactionType("test");
+		transactions.add(transaction);
+
 		user.setUserId(1);
 
 		userAccount.setAccount(account);
@@ -90,6 +117,35 @@ public class AccountServiceTest {
 		Long actual = accountServiceImpl.getAccountSummary(1).getAccountNumber();
 		Long expected = 1L;
 		assertEquals(expected, actual);
+	}
+
+	@Test(expected = AccountnotFoundException.class)
+	public void testGetMyTransactionsAccountnotFoundException() throws UserNotFoundException, AccountnotFoundException {
+
+		Mockito.when(accountRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
+		accountServiceImpl.getMyTransactions(1L);
+
+	}
+
+	@Test(expected = AccountnotFoundException.class)
+	public void testGetMyTransactionsAccountnotFoundException1()
+			throws UserNotFoundException, AccountnotFoundException {
+
+		Mockito.when(accountRepository.findById(1L)).thenReturn(Optional.ofNullable(account));
+		Mockito.when(transactionRepository.findBySourceAccountNumber(Mockito.any())).thenReturn(new ArrayList<>());
+		accountServiceImpl.getMyTransactions(1L);
+
+	}
+
+	@Test
+	public void testGetMyTransactionsSuccess() throws UserNotFoundException, AccountnotFoundException {
+
+		Mockito.when(accountRepository.findById(1L)).thenReturn(Optional.ofNullable(account));
+		Mockito.when(transactionRepository.findBySourceAccountNumber(Mockito.any())).thenReturn(transactions);
+		String actual = accountServiceImpl.getMyTransactions(1L).get(0).getStatus();
+		String expected = "test";
+		assertEquals(expected, actual);
+
 	}
 
 	@Test(expected = UserNotFoundException.class)

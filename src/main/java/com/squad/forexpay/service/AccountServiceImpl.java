@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.squad.forexpay.constant.Constant;
 import com.squad.forexpay.dto.AccountSummaryResponseDto;
 import com.squad.forexpay.dto.ResponseDto;
+import com.squad.forexpay.dto.TransactionDetailsDto;
 import com.squad.forexpay.dto.TransactionRequestDto;
 import com.squad.forexpay.entity.Account;
 import com.squad.forexpay.entity.Transaction;
@@ -32,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Transactional
 public class AccountServiceImpl implements AccountService{
 	
 	@Autowired
@@ -64,7 +62,6 @@ public class AccountServiceImpl implements AccountService{
 		accountSummaryResponseDto.setMinimumBalance(1000.0);
 		return accountSummaryResponseDto;
 	}
-
 	
 	/**
 	 * 
@@ -152,4 +149,39 @@ public class AccountServiceImpl implements AccountService{
 	}
 	}
 	
+	/**
+	 * 
+	 * @author PriyaDharshini S.
+	 * @since 2020-02-11. This method will get the transactions of the current user.
+	 * @param accountNumber - accountNumber of the current logged in user.
+	 * @return list of TransactionDetailsDto - it is having all the transaction details.
+	 * @throws AccountnotFoundException it will throw the exception if the account is not
+	 *                               registered.
+	 * 
+	 */
+	public List<TransactionDetailsDto> getMyTransactions(Long accountNumber) throws AccountnotFoundException{
+		Optional<Account> account = accountRepository.findById(accountNumber);
+		if(!account.isPresent()) {
+			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
+		}
+		List<Transaction> transactions = transactionRepository.findBySourceAccountNumber(account.get());
+		if(transactions.isEmpty()) {
+			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
+		}
+		List<TransactionDetailsDto> detailsDtos = new ArrayList<>();
+		
+		transactions.forEach(mytransaction -> {
+			TransactionDetailsDto transactionDetailsDto = new TransactionDetailsDto();
+			transactionDetailsDto.setAvailableBalance(mytransaction.getAvailableBalance());
+			transactionDetailsDto.setCurrency(mytransaction.getCurrency().getCurrencyName());
+			transactionDetailsDto.setDestinationAccountNumber(mytransaction.getDestinationAccountNumber().getAccountNumber());
+			transactionDetailsDto.setStatus(mytransaction.getStatus());
+			transactionDetailsDto.setTransactionAmount(mytransaction.getTransactionAmount());
+			transactionDetailsDto.setTransactionDate(mytransaction.getTransactionDate());
+			transactionDetailsDto.setTransactionType(mytransaction.getTransactionType());
+			detailsDtos.add(transactionDetailsDto);
+		});
+		return detailsDtos;
+	}
+
 }

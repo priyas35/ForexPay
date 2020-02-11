@@ -26,7 +26,7 @@ public class Constant {
 
 	public static final Integer AUTHENTICATION_SUCCESSFUL_CODE = HttpStatus.OK.value();
 	public static final String CURRENCY_NOT_FOUND = "Currency not found";
-	
+	public static final String TRANSACTION_NOT_FOUND = "Transaction not found";
 	public static final String ACCOUNT_NOT_FOUND = "account not found";
 
 	public static final String EXCHANGE_API = "https://api.exchangeratesapi.io/latest?base=";

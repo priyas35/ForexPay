@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 @RestController
-@RequestMapping("/currency")
+@RequestMapping("/currencies")
 @Slf4j
 public class CurrencyController {
 

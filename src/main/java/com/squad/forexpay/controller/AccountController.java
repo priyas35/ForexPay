@@ -1,5 +1,7 @@
 package com.squad.forexpay.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.squad.forexpay.constant.Constant;
 import com.squad.forexpay.dto.AccountSummaryResponseDto;
 import com.squad.forexpay.dto.ResponseDto;
+import com.squad.forexpay.dto.TransactionDetailsDto;
 import com.squad.forexpay.dto.TransactionRequestDto;
 import com.squad.forexpay.exception.AccountnotFoundException;
 import com.squad.forexpay.exception.UserNotFoundException;
@@ -47,6 +51,26 @@ public class AccountController {
 	public ResponseEntity<AccountSummaryResponseDto> getAccountSummary(@PathVariable("userId") Integer userId)
 			throws UserNotFoundException, AccountnotFoundException {
 		return ResponseEntity.ok().body(accountService.getAccountSummary(userId));
+	}
+	
+	
+	/**
+	 * 
+	 * @author PriyaDharshini S.
+	 * @since 2020-02-11. This method will get the transactions of the current user.
+	 * @param accountNumber - accountNumber of the current logged in user.
+	 * @return list of TransactionDetailsDto - it is having all the transaction details.
+	 * @throws AccountnotFoundException it will throw the exception if the account is not
+	 *                               registered.
+	 * 
+	 */
+	@GetMapping("/{accountNumber}/transactions")
+	public ResponseEntity<List<TransactionDetailsDto>> getMyTransaction(@PathVariable Long accountNumber) throws AccountnotFoundException{
+		if(accountNumber == null) {
+			throw new AccountnotFoundException(Constant.ACCOUNT_NOT_FOUND);
+		}else {
+			return new ResponseEntity<>(accountService.getMyTransactions(accountNumber),HttpStatus.OK);
+		}
 	}
 
 }

@@ -53,4 +53,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		errorDto.setStatusCode(HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
 	}
+	
+	@ExceptionHandler(TransactionNotFoundException.class)
+	public ResponseEntity<ErrorDto> transactionNotFoundException(TransactionNotFoundException ex) {
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setMessage(Constant.CURRENCY_NOT_FOUND);
+		errorDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
+	}
 }

@@ -32,5 +32,8 @@ public class Transaction {
 	private Double availableBalance;
 	private String transactionType;
 	private LocalDateTime transactionDate;
+	@ManyToOne
+	@JoinColumn(name = "currency_code")
+	private Currency currency;
 
 }

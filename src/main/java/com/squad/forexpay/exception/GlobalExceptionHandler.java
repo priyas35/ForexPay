@@ -12,8 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.squad.forexpay.constant.Constant;
+import com.squad.forexpay.dto.ErrorDto;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -31,6 +36,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		body.put("errors", errors);
 		return new ResponseEntity<>(body, headers, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<ErrorDto> userNotFoundException(UserNotFoundException ex) {
+		ErrorDto errorDto = new ErrorDto();
+		errorDto.setMessage(Constant.USER_NOT_FOUND);
+		errorDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+		return ResponseEntity.status(HttpStatus.OK).body(errorDto);
 	}
 
 }

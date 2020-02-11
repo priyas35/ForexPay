@@ -2,6 +2,8 @@ package com.squad.forexpay.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +17,9 @@ public class Account {
    private String bankName;
    private String branchName;
    private Double balance;
+   @ManyToOne
+   @JoinColumn(name = "currency_code")
+   private Currency currency;
    
 
 }

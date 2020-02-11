@@ -2,6 +2,7 @@ package com.squad.forexpay.service;
 
 import java.util.List;
 
+import com.squad.forexpay.dto.ExchangeResponseDto;
 import com.squad.forexpay.entity.Currency;
 import com.squad.forexpay.exception.CurrencyNotFoundException;
 
@@ -16,5 +17,7 @@ public interface CurrencyService {
 	 * 
 	 */
 	List<Currency> getAllCurrency() throws CurrencyNotFoundException;
-
+	
+	ExchangeResponseDto exchangeCurrency(String from, String to, Double amount);
 }
+	

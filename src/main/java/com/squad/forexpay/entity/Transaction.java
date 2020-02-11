@@ -10,9 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+
+@Data
 @Setter
 @Getter
 @SequenceGenerator(name = "transactionId", initialValue = 10001, allocationSize = 1)
